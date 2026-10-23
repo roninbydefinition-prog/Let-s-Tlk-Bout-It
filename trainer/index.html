@@ -1,0 +1,326 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Presence & Flirting Trainer</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;max-width:980px;margin:18px auto;padding:18px;color:#111;background:#f6f7fb}
+    h1{margin:6px 0 12px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .card{border:1px solid #ddd;padding:12px;border-radius:8px;background:#fff;flex:1 1 320px;box-shadow:0 2px 6px rgba(0,0,0,0.03)}
+    label{display:block;margin:8px 0 4px;font-weight:600;font-size:13px}
+    input,select,textarea,button{width:100%;padding:8px;margin-bottom:8px;border-radius:6px;border:1px solid #ccc;box-sizing:border-box}
+    button{cursor:pointer;background:#0b66ff;color:#fff;border:none}
+    button.secondary{background:#e6e9ef;color:#111}
+    .small{font-size:13px;color:#555}
+    .controls{display:flex;gap:8px}
+    .log-entry{margin:8px 0;padding:8px;border-radius:6px;background:#fafafa;border:1px solid #eee}
+    pre.instructions{background:#0f1724;color:#e6eef8;padding:12px;border-radius:8px;overflow:auto;font-size:13px}
+  </style>
+</head>
+<body>
+  <h1>Trainer — Presence & Flirting Practice</h1>
+
+  <div class="row">
+    <div class="card">
+      <h3>How to use — Step‑by‑Step</h3>
+      <pre class="instructions">
+1) Open this Pen in your browser (CodePen preview or open saved training.html).
+2) Allow Notifications & Microphone when the browser asks (notifications for surprise reminders, mic for optional audio).
+3) Create a drill: give it a name and short instructions (e.g., "Say a 1‑line opener to a cashier").
+4) Start Random Reminders or click "Run Now" to trigger a manual drill. Keep the tab open for reminders to fire.
+5) Do the drill (5s–2min). After practice, click "Make a Submission":
+   - Choose a setting and drill.
+   - Add a short note (lines used, reaction, how you felt).
+   - Optionally upload a short audio/video clip (10–60s).
+   - Add a quick self‑rating (1–10) and press "Add Submission".
+6) Grade submissions under "Grade / Review Submissions":
+   - Score Delivery (voice/pace), Presence (posture/eye contact), Line fit, Outcome (0–10 each).
+   - Save grade and feedback.
+7) Export CSV to back up your log or share with a coach.
+
+Quick tips:
+- Use 2‑second pauses after lines; silence adds weight.
+- Practice openers aloud before field attempts.
+- Keep notes honest and short — one clear tweak per submission.
+- For surprise training set the random window (e.g., 30–180 minutes).
+      </pre>
+      <p class="small">If editing here on CodePen: paste your updated text directly into this panel. Changes show in preview immediately.</p>
+    </div>
+
+    <div class="card">
+      <h4>Reminders & Surprise Drills</h4>
+      <label>Random reminder window (minutes):</label>
+      <div style="display:flex;gap:8px">
+        <input id="minMin" type="number" value="60" min="1" style="width:110px"/>
+        <input id="maxMin" type="number" value="240" min="1" style="width:110px"/>
+      </div>
+      <label>Reminder message:</label>
+      <input id="remMsg" value="Flash practice! Do a 2-minute opener and report back." />
+      <div class="controls">
+        <button id="startRem">Start random reminders</button>
+        <button id="stopRem" class="secondary">Stop</button>
+        <button id="testNotif" class="secondary">Test Notification</button>
+      </div>
+      <p class="small">Browser tab must be open for reminders to fire. Allow notifications when prompted.</p>
+      <hr/>
+      <h4>Create a drill</h4>
+      <label>Drill name</label><input id="drillName" placeholder="e.g., Flash Opener"/>
+      <label>Description / instructions</label><textarea id="drillDesc" rows="3" placeholder="Say an opener to a cashier..."></textarea>
+      <div class="controls">
+        <button id="saveDrill">Save Drill</button>
+        <button id="runDrill" class="secondary">Run Now</button>
+      </div>
+      <div id="drillsList" class="small"></div>
+    </div>
+
+    <div class="card">
+      <h3>Make a Submission</h3>
+      <label>Date/time</label><input id="subTime" type="datetime-local"/>
+      <label>Setting</label>
+      <select id="subSetting">
+        <option>Club</option><option>Coffee shop</option><option>Street/park</option><option>DM</option><option>Other</option>
+      </select>
+      <label>Drill (optional)</label><select id="drillSelect"></select>
+      <label>Notes / short report (1–3 lines)</label><textarea id="subNotes" rows="3" placeholder="Lines used, reaction, how you felt"></textarea>
+      <label>Upload audio/video (optional)</label><input id="subFile" type="file" accept="audio/*,video/*"/>
+      <label>Self-rating (1–10) confidence/outcome</label><input id="selfRate" type="number" min="1" max="10" value="6"/>
+      <div class="controls">
+        <button id="addSub">Add Submission</button>
+      </div>
+      <div id="recentStatus" class="small"></div>
+    </div>
+
+    <div class="card">
+      <h3>Grade / Review Submissions</h3>
+      <div id="subsArea" style="max-height:420px;overflow:auto"></div>
+      <hr/>
+      <h4>Export / Manage</h4>
+      <div class="controls">
+        <button id="exportCSV">Export CSV</button>
+        <button id="clearAll" class="secondary">Clear All Data</button>
+      </div>
+      <p class="small">Files and data stay local in your browser (localStorage). Export CSV to save or share progress.</p>
+    </div>
+  </div>
+
+  <script>
+  // Basic storage and UI wiring
+  const LS_KEY = 'trainer_practice_log_v1';
+  const LS_DRILLS = 'trainer_drills_v1';
+  let reminderTimer = null;
+
+  function uid(){ return Math.random().toString(36).slice(2,9); }
+
+  // Load drills
+  function loadDrills(){
+    const raw = localStorage.getItem(LS_DRILLS) || '[]';
+    const arr = JSON.parse(raw);
+    const list = document.getElementById('drillsList');
+    const sel = document.getElementById('drillSelect');
+    list.innerHTML = '';
+    sel.innerHTML = '<option value="">(none)</option>';
+    arr.forEach(d=>{
+      const el = document.createElement('div');
+      el.className='small';
+      el.textContent = `${d.name} — ${d.desc}`;
+      list.appendChild(el);
+      const opt = document.createElement('option');
+      opt.value = d.id; opt.textContent = d.name;
+      sel.appendChild(opt);
+    });
+  }
+
+  function saveDrill(){
+    const name = document.getElementById('drillName').value.trim();
+    const desc = document.getElementById('drillDesc').value.trim();
+    if(!name) return alert('Add a drill name');
+    const raw = localStorage.getItem(LS_DRILLS) || '[]';
+    const arr = JSON.parse(raw);
+    arr.push({id:uid(), name, desc, created:Date.now()});
+    localStorage.setItem(LS_DRILLS, JSON.stringify(arr));
+    loadDrills();
+    document.getElementById('drillName').value=''; document.getElementById('drillDesc').value='';
+  }
+
+  // Submissions
+  function loadSubs(){
+    const raw = localStorage.getItem(LS_KEY) || '[]';
+    return JSON.parse(raw);
+  }
+  function saveSubs(arr){ localStorage.setItem(LS_KEY, JSON.stringify(arr)); renderSubs(); }
+
+  function addSubmission(){
+    const timeEl = document.getElementById('subTime');
+    const time = timeEl.value ? new Date(timeEl.value).toISOString() : new Date().toISOString();
+    const setting = document.getElementById('subSetting').value;
+    const drill = document.getElementById('drillSelect').value || '';
+    const notes = document.getElementById('subNotes').value.trim();
+    const file = document.getElementById('subFile').files[0] || null;
+    const selfRate = Number(document.getElementById('selfRate').value) || 0;
+    const entry = { id: uid(), time, setting, drill, notes, selfRate, fileName: file ? file.name : '', graded: false, scores:null, created: Date.now()};
+    const arr = loadSubs();
+    arr.unshift(entry);
+    saveSubs(arr);
+    document.getElementById('recentStatus').textContent = 'Added. You can grade it below.';
+    document.getElementById('subNotes').value=''; document.getElementById('subFile').value=''; document.getElementById('selfRate').value=6;
+  }
+
+  function renderSubs(){
+    const container = document.getElementById('subsArea');
+    const arr = loadSubs();
+    container.innerHTML = '';
+    if(!arr.length){ container.innerHTML = '<div class="small">No submissions yet.</div>'; return; }
+    arr.forEach(e=>{
+      const wrap = document.createElement('div'); wrap.className='log-entry';
+      const d = new Date(e.time).toLocaleString();
+      wrap.innerHTML = `<strong>${d}</strong> — <span class="small">${e.setting}${e.drill ? ' / '+e.drill:''}</span>
+        <div style="margin-top:6px">${e.notes ? `<div>${escapeHtml(e.notes)}</div>` : ''}${e.fileName ? `<div class="small">File: ${e.fileName}</div>` : ''}</div>
+        <div style="margin-top:8px" id="grade-${e.id}"></div>`;
+      container.appendChild(wrap);
+
+      const gradeArea = wrap.querySelector('#grade-'+e.id);
+      if(!e.graded){
+        gradeArea.innerHTML = `
+        <div class="small">Grade this submission (0–10 each):</div>
+        <label>Delivery (voice/pace)</label><input id="d-${e.id}" type="number" min="0" max="10" value="6"/>
+        <label>Presence (posture/eye contact)</label><input id="p-${e.id}" type="number" min="0" max="10" value="6"/>
+        <label>Line fit/content</label><input id="c-${e.id}" type="number" min="0" max="10" value="6"/>
+        <label>Outcome & reading</label><input id="o-${e.id}" type="number" min="0" max="10" value="6"/>
+        <label>Notes (short feedback)</label><input id="n-${e.id}" placeholder="One-line tweak"/>
+        <div style="display:flex;gap:8px;margin-top:6px"><button id="saveG-${e.id}">Save Grade</button></div>
+        `;
+        wrap.querySelector('#saveG-'+e.id).onclick = ()=>{
+          const delivery = Number(document.getElementById('d-'+e.id).value||0);
+          const presence = Number(document.getElementById('p-'+e.id).value||0);
+          const content = Number(document.getElementById('c-'+e.id).value||0);
+          const outcome = Number(document.getElementById('o-'+e.id).value||0);
+          const note = document.getElementById('n-'+e.id).value||'';
+          const total = delivery + presence + content + outcome;
+          e.graded = true;
+          e.scores = {delivery,presence,content,outcome,total};
+          e.feedback = note;
+          const arr = loadSubs().map(s=> s.id===e.id? e: s);
+          saveSubs(arr);
+        };
+      } else {
+        gradeArea.innerHTML = `<div class="small">Graded: ${e.scores.total}/40 — Grade ${(Math.round((e.scores.total/40)*10))}/10</div>
+          <div class="small">Feedback: ${escapeHtml(e.feedback||'')}</div>
+          <div style="margin-top:6px"><button id="regrade-${e.id}" class="secondary">Regrade / Edit</button></div>`;
+        wrap.querySelector('#regrade-'+e.id).onclick = ()=>{
+          e.graded = false; e.scores = null; e.feedback = null;
+          const arr = loadSubs().map(s=> s.id===e.id? e: s);
+          saveSubs(arr);
+        };
+      }
+    });
+  }
+
+  function exportCSV(){
+    const arr = loadSubs();
+    if(!arr.length) return alert('No submissions');
+    const rows = [['id','time','setting','drill','notes','fileName','selfRate','graded','delivery','presence','content','outcome','total','feedback']];
+    arr.forEach(e=>{
+      const s = e.scores || {delivery:'',presence:'',content:'',outcome:'',total:''};
+      rows.push([e.id,e.time,e.setting,e.drill, (e.notes||'').replace(/\n/g,' '), e.fileName, e.selfRate, e.graded, s.delivery, s.presence, s.content, s.outcome, s.total, e.feedback||'']);
+    });
+    const csv = rows.map(r=> r.map(v=> `"${(''+v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download = 'trainer_log.csv'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function clearAll(){
+    if(!confirm('Clear all stored submissions and drills?')) return;
+    localStorage.removeItem(LS_KEY);
+    localStorage.removeItem(LS_DRILLS);
+    loadDrills(); renderSubs();
+  }
+
+  // Reminders
+  function requestNotificationPerm(){
+    if(!('Notification' in window)) return alert('Notifications not supported in this browser');
+    if(Notification.permission === 'default') Notification.requestPermission();
+  }
+  function testNotification(){
+    requestNotificationPerm();
+    if(Notification.permission === 'granted'){
+      new Notification('Trainer test', {body: document.getElementById('remMsg').value});
+      const snd = new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjQwLjEwNAAAAAAAAAAAAAAA//tQxAADB');
+      snd.play().catch(()=>{});
+    } else alert('Allow notifications in your browser settings');
+  }
+
+  function scheduleRandom(minMinutes, maxMinutes){
+    stopReminders();
+    const min = Math.max(1, Number(minMinutes) || 60);
+    const max = Math.max(min, Number(maxMinutes) || (min*2));
+    const delayMin = min*60*1000;
+    const delayMax = max*60*1000;
+    const pick = () => Math.floor(Math.random()*(delayMax - delayMin +1)) + delayMin;
+    const setNext = () => {
+      const ms = pick();
+      console.log('Next reminder in ms', ms);
+      reminderTimer = setTimeout(()=> {
+        fireReminder();
+        setNext();
+      }, ms);
+    };
+    setNext();
+  }
+
+  function stopReminders(){
+    if(reminderTimer) clearTimeout(reminderTimer);
+    reminderTimer = null;
+  }
+
+  function fireReminder(){
+    requestNotificationPerm();
+    const msg = document.getElementById('remMsg').value || 'Practice time!';
+    if(Notification.permission === 'granted') new Notification('Practice reminder', {body: msg});
+    const snd = new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjQwLjEwNAAAAAAAAAAAAAAA//tQxAADB');
+    snd.play().catch(()=>{});
+    alert('Practice reminder: ' + msg + '\n(Do a short drill and add a submission!)');
+  }
+
+  // Helpers
+  function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
+
+  // Wire UI
+  document.getElementById('saveDrill').onclick = saveDrill;
+  document.getElementById('addSub').onclick = addSubmission;
+  document.getElementById('exportCSV').onclick = exportCSV;
+  document.getElementById('clearAll').onclick = clearAll;
+  document.getElementById('testNotif').onclick = testNotification;
+  document.getElementById('startRem').onclick = ()=>{
+    const min = Number(document.getElementById('minMin').value||60);
+    const max = Number(document.getElementById('maxMin').value||240);
+    scheduleRandom(min,max);
+    document.getElementById('recentStatus').textContent = 'Random reminders started.';
+  };
+  document.getElementById('stopRem').onclick = ()=>{
+    stopReminders();
+    document.getElementById('recentStatus').textContent = 'Reminders stopped.';
+  };
+  document.getElementById('runDrill').onclick = ()=>{
+    const name = document.getElementById('drillName').value.trim();
+    const desc = document.getElementById('drillDesc').value.trim() || document.getElementById('remMsg').value;
+    alert('Run drill now: ' + (name||desc));
+  };
+
+  // Init
+  loadDrills();
+  renderSubs();
+
+  // Optional: quick demo drill if none exist
+  if(!(localStorage.getItem(LS_DRILLS)) || JSON.parse(localStorage.getItem(LS_DRILLS)).length===0){
+    const demo = [{id:uid(), name:'Flash opener', desc:'Say a short opener to someone in line and report back', created:Date.now()}];
+    localStorage.setItem(LS_DRILLS, JSON.stringify(demo));
+    loadDrills();
+  }
+  </script>
+</body>
+</html>
+``` 
