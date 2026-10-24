@@ -7,6 +7,7 @@
 | 🎙️ [LTBI — Let's Talk Bout It](ltbi/) | The podcast. Real convos, no script, no sugarcoating. |
 | 🥋 [Presence & Flirting Trainer](trainer/) | A working single-page app for practicing social presence and flirting drills. |
 | 🎬 [The Production Team](production-team/) | LTBI's podcast production crew — showrunner, producer, audio, promo, analytics. |
+| 🪞 [The Simulation](the-simulation/) | An AI-only LTBI series — a cast of AI living in a virtual world, talking to each other. |
 
 ## The flagship show
 
