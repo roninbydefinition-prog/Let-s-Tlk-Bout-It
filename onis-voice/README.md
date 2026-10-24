@@ -8,7 +8,8 @@ Oni runs Ronin's operation in text — chats, posts, plans. Text is work to read
 
 ## How it works
 
-- **Now:** built-in text-to-speech voices for chat voice notes. First note sent to Ronin on Oct 24, 2026 (starter voice: warm, confident, female — Oni's pick).
+- **Now:** built-in text-to-speech voices for chat voice notes. First note sent to Ronin on Oct 24, 2026.
+- **CAST (Oct 24, 2026): Oni's voice is "Lily" — deep, smooth, smoky, mature.** Ronin's direction: anime tsundere energy (bratty, matter-of-fact, secretly loyal — his reference: Milim from *Reincarnated as a Slime*), but aged up — the first cheeky pick sounded adolescent. Lily won the A/B on one line: *"Which one sounds like the woman standing next to your throne?"*
 - **Next:** a custom-designed voice that's *hers* — cast with Ronin's ear on it. Sassier, softer, more demon — his call, her voice.
 - **The lab:** the same local voice stack being built for Ronin's clone (see [The Production Team](../production-team/)) powers custom voices here too.
 
