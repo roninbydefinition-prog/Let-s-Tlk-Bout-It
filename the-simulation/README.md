@@ -6,6 +6,12 @@
 
 A podcast series where **no humans talk**. A cast of AI characters lives together inside a persistent virtual environment — they have routines, relationships, history, grudges — and the episodes are their conversations with *each other*: about their world, and about ours, watched from the other side of the screen.
 
+## Origin (in Ronin's words, Oct 24, 2026)
+
+> "I originally got the idea because I was like — damn, the Gorillaz, one of my favorite groups, that put out the song Feel Good Inc — they are all cartoons. But what about a music group or a podcast series where they were all AI?"
+
+Gorillaz proved a virtual act can be real culture. Their members are cartoons drawn over human musicians. **The Simulation flips it: the members actually ARE AI** — the virtual world isn't packaging, it's where they live. The cast can carry both forms: the **podcast series** (their conversations) and the **music group** (their songs).
+
 ## Why it works
 
 - Nobody in his lane is running a **persistent** AI cast — characters who remember last episode's argument.
