@@ -8,6 +8,7 @@
 | 🥋 [Presence & Flirting Trainer](trainer/) | A working single-page app for practicing social presence and flirting drills. |
 | 🎬 [The Production Team](production-team/) | LTBI's podcast production crew — showrunner, producer, audio, promo, analytics. |
 | 🪞 [The Simulation](the-simulation/) | An AI-only LTBI series — a cast of AI living in a virtual world, talking to each other. |
+| 🔊 [Oni's Voice](onis-voice/) | Giving Oni a real voice — so the King can listen instead of read. |
 
 ## The flagship show
 
