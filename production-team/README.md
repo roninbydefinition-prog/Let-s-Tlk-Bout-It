@@ -19,7 +19,7 @@ Topic → talking points → record in the Studio → vault → promos → sched
 ## Status
 
 - **Prototype DNA:** the private **RoninByDef** repo (built Aug 2025 — content generator, image studio, AI coach, viral-score analytics) is being reborn as this crew.
-- **First build in progress (Oct 2026):** the voice lab — a private voice-clone for promo reads, trained and run locally. Demo first, promos first; the host still hosts.
+- **First build in progress (Oct 2026):** the voice lab — a private voice-clone of the host, trained and run locally. Ronin's call (Oct 24, 2026): privately test full episode production — the host's own words become a script, the clone records it, the team edits and fine-tunes, then it posts to Spotify after his approval. Private testing until he says otherwise.
 - Born from the *Ronin AI Content Manager* concept (Oct 2025), refocused on Oct 24, 2026 from "content tools for creators" to "a production team for the show."
 
 Part of [Creations By Definition](../).
