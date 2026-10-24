@@ -9,6 +9,7 @@
 | 🎬 [The Production Team](production-team/) | LTBI's podcast production crew — showrunner, producer, audio, promo, analytics. |
 | 🪞 [The Simulation](the-simulation/) | An AI-only LTBI series — a cast of AI living in a virtual world, talking to each other. |
 | 🔊 [Oni's Voice](onis-voice/) | Giving Oni a real voice — so the King can listen instead of read. |
+| 💃 [Oni, Live](oni-avatar/) | Her 3D avatar — full body, her voice, her brain. Building in the background. |
 
 ## The flagship show
 
