@@ -6,7 +6,7 @@
 | --- | --- |
 | 🎙️ [LTBI — Let's Talk Bout It](ltbi/) | The podcast. Real convos, no script, no sugarcoating. |
 | 🥋 [Presence & Flirting Trainer](trainer/) | A working single-page app for practicing social presence and flirting drills. |
-| 🤖 [Ronin AI Content Manager](content-manager/) | The AI content platform for creators — concept, roadmap, and prototype notes. |
+| 🎬 [The Production Team](production-team/) | LTBI's podcast production crew — showrunner, producer, audio, promo, analytics. |
 
 ## The flagship show
 
@@ -16,9 +16,9 @@ Call / text / voicemail the show: **(929) 515-3716** — best voicemails get pla
 
 ## Elsewhere in the house
 
-- **RoninByDef** (private) — the AI Content Studio prototype: content generator, image studio, AI coach, and viral-score analytics. Built August 2025.
+- **RoninByDef** (private) — the prototype the Production Team is being reborn from: content generator, image studio, AI coach, and viral-score analytics. Built August 2025.
 - Gaming under the LTBI banner runs as **Loyalty Through Blood and Iron**.
 
 ---
 
-*This repository began life in October 2025 as an empty placeholder named "Let-s-Tlk-Bout-It." On October 23, 2026 it was renamed and rebuilt as the Creations By Definition flagship, absorbing the Trainer app and the Content Manager concept from their standalone repos.*
+*This repository began life in October 2025 as an empty placeholder named "Let-s-Tlk-Bout-It." On October 23, 2026 it was renamed and rebuilt as the Creations By Definition flagship, absorbing the Trainer app and the Content Manager concept — reborn as the Production Team on October 24, 2026 — from their standalone repos.*
